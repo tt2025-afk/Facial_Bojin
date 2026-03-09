@@ -1,413 +1,415 @@
-import React, { useState } from 'react';
-import { List, Sparkles, Smile, UserCircle, PlayCircle, AlertTriangle } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>居家臉部撥筋指南</title>
+  
+  <!-- 引入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 引入 React 與 ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- 引入 Babel 讓瀏覽器可以直接看懂 JSX -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-const App = () => {
-  const [activeTab, setActiveTab] = useState('general');
-  const [showAcupoints, setShowAcupoints] = useState(false); // 新增：控制穴道圖顯示與隱藏的狀態
-  const [showOverallProcess, setShowOverallProcess] = useState(false); // 新增：控制整體流程圖顯示與隱藏的狀態
-  const [showHeadOverallProcess, setShowHeadOverallProcess] = useState(false); // 新增：控制頭部整體流程圖顯示與隱藏的狀態
+  <style>
+    /* 處理 iPhone 底部安全區 */
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    body { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div id="root"></div>
 
-  // ==========================================
-  // 1. 總步驟資料區 (包含顏色分類)
-  // type: 'care' (保養/藍色), 'facial' (臉部/粉紅), 'head' (頭部/紫色)
-  // ==========================================
-  const generalSteps = [
-    // 👇 示範：在這個步驟加上 image 屬性，它就會顯示圖片
-    { id: 0, title: '工具準備', desc: '準備撥筋工具、保養品與鏡子，並將水桶注水半滿', type: 'care', image: 'https://i.ibb.co/Xfnc4L9R/image.jpg' },
-    
-    // 👇 示範：這個步驟沒有 image 屬性，就不會顯示圖片
-    { id: 1, title: '毛巾與髮帶使用', desc: '①準備好乾淨的毛巾，一條鋪在客人頭下，另一條在胸前斜放後反摺，並將毛巾塞入衣領\n②使用髮帶將客人頭髮盤起，髮帶拉至髮際線', type: 'care' },
-    { id: 2, title: '卸妝與深層洗臉', desc: '先使用卸妝乳(約5元硬幣大小)溫和卸除臉部彩妝與髒污，洗淨後再以洗顏慕斯(按壓1下)進行二次清潔。', type: 'care' },
-    { id: 3, title: '塗抹化妝水', desc: '取化妝棉倒入約兩指寬化妝水，為洗淨後的肌膚初步補水。', type: 'care' },
-    { id: 4, title: '塗抹按摩霜', desc: '取適量按摩霜，並一起深呼吸三次後，均勻塗抹於臉上，避免後續撥筋拉扯肌膚。', type: 'care' },
-    { id: 5, title: '臉部撥筋', desc: '使用撥筋棒由內而外、由下而上進行臉部穴位與筋絡放鬆。', type: 'facial' },
-    { id: 6, title: '舒緩敷面膜', desc: '撥筋後肌膚吸收力佳，以刷子取一杓面膜，均勻刷上保濕面膜敷約 10-15 分鐘鎮定肌膚。', type: 'care' },
-    { id: 7, title: '頭部撥筋', desc: '等待敷面膜的同時，進行頭部撥筋，放鬆頭皮並促進整體循環。', type: 'head' },
-    { id: 8, title: '卸除面膜', desc: '以洗臉巾卸除面膜，約3-5次直到面膜卸除乾淨。', type: 'care' },
-    { id: 9, title: '塗抹化妝水與保濕霜', desc: '先以化妝棉塗抹化妝水後，再取適量保濕霜塗抹將水分鎖住。', type: 'care' },
-    { id: 10, title: '日間防曬（視需求）', desc: '若於白天進行撥筋，保養最後請務必擦上防曬乳保護肌膚。', type: 'care' },
-  ];
+  <script type="text/babel">
+    const { useState } = React;
 
-  // ==========================================
-  // 👇👇👇 這裡可以修改【臉部撥筋】的圖片和影片 👇👇👇
-  // ==========================================
-  const facialSteps = [
-    {
-      id: 1,
-      title: '耳朵',
-      desc: '●開穴：耳下(聽會)、小耳朵(聽宮)、耳上(耳門)\n以耳朵下方開始，左手指頭壓緊，由外往內進行圓周式撥動，最後繞至耳垂後方撇三下\n※功效：疏通淋巴、舒緩壓力',
-      videoUrl: '#' 
-    },
-    {
-      id: 2,
-      title: '額頭',
-      desc: '●開穴：兩眉中間(印堂)\n將額頭分三段，左手比V垂直平放額頭，由眉心往髮際線方向，採橫向 Z 字型（鋸齒狀）撥動。\n※功效：撫平抬頭紋、亮白膚色',
-      videoUrl: '#'
-    },
-    {
-      id: 3,
-      title: '眉毛',
-      desc: '●開穴：眉頭、眉峰上下兩點、眉尾\n①沿著眉骨，由眉頭向眉尾方向，進行挑筋。\n②在眉毛上方，由外往內畫圈往眉尾方向進行滑動。\n※功效：舒緩眼壓、減壓放鬆',
-      videoUrl: '#'
-    },
-    {
-      id: 4,
-      title: '眼部',
-      desc: '●開穴：眼頭、眼窩下方兩點、眼角\n①眼頭往上-眉骨-眼尾\n②眼頭-眼窩-眼尾\n③眼頭-眼窩下方1公分-眼尾，進行左右滑撥。\n※功效：淡化黑眼圈、消除浮腫',
-      videoUrl: '#'
-    },
-    {
-      id: 5,
-      title: '魚尾紋',
-      desc: '針對眼角外側，以小幅度的 Z 字型撥動至髮際後，往上Z字滑動至眉尾。\n※功效：減淡眼角細紋、平滑肌理',
-      videoUrl: '#'
-    },
-    {
-      id: 6,
-      title: '鼻部',
-      desc: '●開穴：鼻翼側\n沿著鼻翼兩側進行上下滑撥，到鼻根處轉為左右滑動。\n※功效：改善法令紋、通暢呼吸',
-      videoUrl: '#'
-    },
-    {
-      id: 7,
-      title: '臉頰（蘋果肌）',
-      desc: '先進行臉頰深層撥軟（1次），接著順著蘋果肌線條，撥筋棒平行臉部往耳朵滑動。\n※功效：澎潤飽滿、紅潤氣色',
-      videoUrl: '#'
-    },
-    {
-      id: 8,
-      title: '嘴部',
-      desc: '●開穴：人中、嘴角、下唇中間\n①人中上下滑動到嘴角\n②嘴角上下滑動斜下方向至下巴③下巴上下滑動至嘴角，放鬆口輪匝肌。\n※功效：減輕嘴角下垂、改善木偶紋',
-      videoUrl: '#'
-    },
-    {
-      id: 9,
-      title: '臉頰',
-      desc: '●開穴：下顎中間\n由內向外，分三條平行線路（斜向上）進行 Z 字型大面積撥動，最後撥筋棒垂直下顎，滑動至耳下。\n※功效：全臉緊緻、改善鬆弛',
-      videoUrl: '#'
-    },
-    {
-      id: 10,
-      title: '咀嚼肌',
-      desc: '針對咬肌較硬的兩條筋，由下顎往上Z字型進行深層按壓與撥筋。\n※功效：小 V 臉形塑、放鬆顳顎',
-      videoUrl: '#'
-    },
-    {
-      id: 11,
-      title: '咀嚼肌+下顎',
-      desc: '使用大牛角棒沿著下顎骨線條向上提拉，並加強咀嚼肌處的兩條經絡。\n※功效：下顎線拉提、緊緻輪廓',
-      videoUrl: '#'
-    }
-  ];
+    // --- 自製 SVG 圖示元件 (取代原本需要安裝的 lucide-react) ---
+    const AlertTriangle = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    );
+    const PlayCircle = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+    );
+    const Sparkles = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+    );
+    const Smile = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+    );
+    const List = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+    );
+    const UserCircle = ({ size = 24, className = "" }) => (
+       <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path></svg>
+    );
 
-  // ==========================================
-  // 👇👇👇 這裡可以修改【頭部撥筋】的圖片和影片 👇👇👇
-  // ==========================================
-  const headSteps = [
-    {
-      id: 1,
-      title: 'Y型牛角棒開穴',
-      desc: '(尖角)直撥髮際線3次(左→右→左)。',
-      // 這個步驟示範不放 image，只會有文字和影片按鈕
-      videoUrl: '#'
-    },
-    {
-      id: 2,
-      title: '木梳放鬆',
-      desc: '從額頭正中央，向後沿每條經絡各梳3-5次\n①額頭正中央\n頭往右轉，左側在上方\n②左眉毛上方③左耳際上方④左耳後方\n頭往左轉，右側在上方\n⑤右眉毛上方⑥右耳際上方⑦右耳後方。',
-      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=400&h=300',
-      videoUrl: '#'
-    },
-    {
-      id: 3,
-      title: 'Y型牛角棒',
-      desc: '(尖角)沿每條經絡Z字梳3-5次，路徑同木梳',
-      // 這個步驟也示範不放 image
-      videoUrl: '#'
-    },
-    {
-      id: 4,
-      title: '頭部按摩&順氣',
-      desc: '①雙手扶頭，兩手拇指左右交錯順至百會穴\n②雙手平伸至腦後，由下往上抓至百會穴\n③將左右氣抓至百會穴集中，丟掉(約3次)',
-      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=400&h=300',
-      videoUrl: '#'
-    }
-  ];
+    // --- 主程式開始 ---
+    const App = () => {
+      const [activeTab, setActiveTab] = useState('general');
+      const [showAcupoints, setShowAcupoints] = useState(false);
+      const [showOverallProcess, setShowOverallProcess] = useState(false);
+      const [showHeadOverallProcess, setShowHeadOverallProcess] = useState(false);
 
-  // 取得顏色樣式的輔助函式
-  const getStepStyle = (type) => {
-    switch (type) {
-      case 'facial':
-        return { dot: 'bg-pink-500', line: 'border-pink-200', text: 'text-pink-800', bg: 'bg-pink-50' };
-      case 'head':
-        return { dot: 'bg-purple-500', line: 'border-purple-200', text: 'text-purple-800', bg: 'bg-purple-50' };
-      case 'care':
-      default:
-        return { dot: 'bg-blue-400', line: 'border-blue-200', text: 'text-blue-800', bg: 'bg-blue-50' };
-    }
-  };
+      const generalSteps = [
+        { id: 0, title: '工具準備', desc: '準備撥筋工具、保養品與鏡子，並將水桶注水半滿', type: 'care', image: 'https://i.ibb.co/Xfnc4L9R/image.jpg' },
+        { id: 1, title: '毛巾與髮帶使用', desc: '①準備好乾淨的毛巾，一條鋪在客人頭下，另一條在胸前斜放後反摺，並將毛巾塞入衣領\n②使用髮帶將客人頭髮盤起，髮帶拉至髮際線', type: 'care' },
+        { id: 2, title: '卸妝與深層洗臉', desc: '先使用卸妝乳(約5元硬幣大小)溫和卸除臉部彩妝與髒污，洗淨後再以洗顏慕斯(按壓1下)進行二次清潔。', type: 'care' },
+        { id: 3, title: '塗抹化妝水', desc: '取化妝棉倒入約兩指寬化妝水，為洗淨後的肌膚初步補水。', type: 'care' },
+        { id: 4, title: '塗抹按摩霜', desc: '取適量按摩霜，並一起深呼吸三次後，均勻塗抹於臉上，避免後續撥筋拉扯肌膚。', type: 'care' },
+        { id: 5, title: '臉部撥筋', desc: '使用撥筋棒由內而外、由下而上進行臉部穴位與筋絡放鬆。', type: 'facial' },
+        { id: 6, title: '舒緩敷面膜', desc: '撥筋後肌膚吸收力佳，以刷子取一杓面膜，均勻刷上保濕面膜敷約 10-15 分鐘鎮定肌膚。', type: 'care' },
+        { id: 7, title: '頭部撥筋', desc: '等待敷面膜的同時，進行頭部撥筋，放鬆頭皮並促進整體循環。', type: 'head' },
+        { id: 8, title: '卸除面膜', desc: '以洗臉巾卸除面膜，約3-5次直到面膜卸除乾淨。', type: 'care' },
+        { id: 9, title: '塗抹化妝水與保濕霜', desc: '先以化妝棉塗抹化妝水後，再取適量保濕霜塗抹將水分鎖住。', type: 'care' },
+        { id: 10, title: '日間防曬（視需求）', desc: '若於白天進行撥筋，保養最後請務必擦上防曬乳保護肌膚。', type: 'care' },
+      ];
 
-  // --- 渲染內容區 ---
-  const renderGeneral = () => (
-    <div className="p-4 space-y-4 pb-24">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">撥筋與保養總步驟</h2>
-      
-      {/* 顏色圖例說明 */}
-      <div className="flex space-x-3 mb-6 text-sm font-medium">
-        <span className="flex items-center text-blue-700"><span className="w-3 h-3 rounded-full bg-blue-400 mr-1"></span>保養/準備</span>
-        <span className="flex items-center text-pink-700"><span className="w-3 h-3 rounded-full bg-pink-500 mr-1"></span>臉部撥筋</span>
-        <span className="flex items-center text-purple-700"><span className="w-3 h-3 rounded-full bg-purple-500 mr-1"></span>頭部撥筋</span>
-      </div>
+      const facialSteps = [
+        {
+          id: 1,
+          title: '耳朵',
+          desc: '●開穴：耳下(聽會)、小耳朵(聽宮)、耳上(耳門)\n以耳朵下方開始，左手指頭壓緊，由外往內進行圓周式撥動，最後繞至耳垂後方撇三下\n※功效：疏通淋巴、舒緩壓力',
+          videoUrl: '#' 
+        },
+        {
+          id: 2,
+          title: '額頭',
+          desc: '●開穴：兩眉中間(印堂)\n將額頭分三段，左手比V垂直平放額頭，由眉心往髮際線方向，採橫向 Z 字型（鋸齒狀）撥動。\n※功效：撫平抬頭紋、亮白膚色',
+          videoUrl: '#'
+        },
+        {
+          id: 3,
+          title: '眉毛',
+          desc: '●開穴：眉頭、眉峰上下兩點、眉尾\n①沿著眉骨，由眉頭向眉尾方向，進行挑筋。\n②在眉毛上方，由外往內畫圈往眉尾方向進行滑動。\n※功效：舒緩眼壓、減壓放鬆',
+          videoUrl: '#'
+        },
+        {
+          id: 4,
+          title: '眼部',
+          desc: '●開穴：眼頭、眼窩下方兩點、眼角\n①眼頭往上-眉骨-眼尾\n②眼頭-眼窩-眼尾\n③眼頭-眼窩下方1公分-眼尾，進行左右滑撥。\n※功效：淡化黑眼圈、消除浮腫',
+          videoUrl: '#'
+        },
+        {
+          id: 5,
+          title: '魚尾紋',
+          desc: '針對眼角外側，以小幅度的 Z 字型撥動至髮際後，往上Z字滑動至眉尾。\n※功效：減淡眼角細紋、平滑肌理',
+          videoUrl: '#'
+        },
+        {
+          id: 6,
+          title: '鼻部',
+          desc: '●開穴：鼻翼側\n沿著鼻翼兩側進行上下滑撥，到鼻根處轉為左右滑動。\n※功效：改善法令紋、通暢呼吸',
+          videoUrl: '#'
+        },
+        {
+          id: 7,
+          title: '臉頰（蘋果肌）',
+          desc: '先進行臉頰深層撥軟（1次），接著順著蘋果肌線條，撥筋棒平行臉部往耳朵滑動。\n※功效：澎潤飽滿、紅潤氣色',
+          videoUrl: '#'
+        },
+        {
+          id: 8,
+          title: '嘴部',
+          desc: '●開穴：人中、嘴角、下唇中間\n①人中上下滑動到嘴角\n②嘴角上下滑動斜下方向至下巴③下巴上下滑動至嘴角，放鬆口輪匝肌。\n※功效：減輕嘴角下垂、改善木偶紋',
+          videoUrl: '#'
+        },
+        {
+          id: 9,
+          title: '臉頰',
+          desc: '●開穴：下顎中間\n由內向外，分三條平行線路（斜向上）進行 Z 字型大面積撥動，最後撥筋棒垂直下顎，滑動至耳下。\n※功效：全臉緊緻、改善鬆弛',
+          videoUrl: '#'
+        },
+        {
+          id: 10,
+          title: '咀嚼肌',
+          desc: '針對咬肌較硬的兩條筋，由下顎往上Z字型進行深層按壓與撥筋。\n※功效：小 V 臉形塑、放鬆顳顎',
+          videoUrl: '#'
+        },
+        {
+          id: 11,
+          title: '咀嚼肌+下顎',
+          desc: '使用大牛角棒沿著下顎骨線條向上提拉，並加強咀嚼肌處的兩條經絡。\n※功效：下顎線拉提、緊緻輪廓',
+          videoUrl: '#'
+        }
+      ];
 
-      <div className="ml-3">
-        {generalSteps.map((step, index) => {
-          const style = getStepStyle(step.type);
-          const isLast = index === generalSteps.length - 1;
-          
-          return (
-            <div key={step.id} className={`relative pl-8 pb-8 ${isLast ? '' : `border-l-2 ${style.line}`}`}>
-              {/* 圓點數字 */}
-              <div className={`absolute w-7 h-7 ${style.dot} rounded-full text-white flex items-center justify-center text-sm font-bold -left-[15px] top-0 shadow-sm border-2 border-white`}>
-                {step.id}
-              </div>
-              
-              {/* 內容卡片 */}
-              <div className={`${style.bg} p-4 rounded-xl shadow-sm border border-white/50 -mt-2`}>
-                <h3 className={`font-bold text-lg ${style.text}`}>{step.title}</h3>
-                
-                {/* 👇 新增的判斷機制：如果該步驟有 image，才渲染這張圖片 */}
+      const headSteps = [
+        {
+          id: 1,
+          title: 'Y型牛角棒開穴',
+          desc: '(尖角)直撥髮際線3次(左→右→左)。',
+          videoUrl: '#'
+        },
+        {
+          id: 2,
+          title: '木梳放鬆',
+          desc: '從額頭正中央，向後沿每條經絡各梳3-5次\n①額頭正中央\n頭往右轉，左側在上方\n②左眉毛上方③左耳際上方④左耳後方\n頭往左轉，右側在上方\n⑤右眉毛上方⑥右耳際上方⑦右耳後方。',
+          image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=400&h=300',
+          videoUrl: '#'
+        },
+        {
+          id: 3,
+          title: 'Y型牛角棒',
+          desc: '(尖角)沿每條經絡Z字梳3-5次，路徑同木梳',
+          videoUrl: '#'
+        },
+        {
+          id: 4,
+          title: '頭部按摩&順氣',
+          desc: '①雙手扶頭，兩手拇指左右交錯順至百會穴\n②雙手平伸至腦後，由下往上抓至百會穴\n③將左右氣抓至百會穴集中，丟掉(約3次)',
+          image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=400&h=300',
+          videoUrl: '#'
+        }
+      ];
+
+      const getStepStyle = (type) => {
+        switch (type) {
+          case 'facial':
+            return { dot: 'bg-pink-500', line: 'border-pink-200', text: 'text-pink-800', bg: 'bg-pink-50' };
+          case 'head':
+            return { dot: 'bg-purple-500', line: 'border-purple-200', text: 'text-purple-800', bg: 'bg-purple-50' };
+          case 'care':
+          default:
+            return { dot: 'bg-blue-400', line: 'border-blue-200', text: 'text-blue-800', bg: 'bg-blue-50' };
+        }
+      };
+
+      const renderGeneral = () => (
+        <div className="p-4 space-y-4 pb-24">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">撥筋與保養總步驟</h2>
+          <div className="flex space-x-3 mb-6 text-sm font-medium">
+            <span className="flex items-center text-blue-700"><span className="w-3 h-3 rounded-full bg-blue-400 mr-1"></span>保養/準備</span>
+            <span className="flex items-center text-pink-700"><span className="w-3 h-3 rounded-full bg-pink-500 mr-1"></span>臉部撥筋</span>
+            <span className="flex items-center text-purple-700"><span className="w-3 h-3 rounded-full bg-purple-500 mr-1"></span>頭部撥筋</span>
+          </div>
+
+          <div className="ml-3">
+            {generalSteps.map((step, index) => {
+              const style = getStepStyle(step.type);
+              const isLast = index === generalSteps.length - 1;
+              return (
+                <div key={step.id} className={`relative pl-8 pb-8 ${isLast ? '' : `border-l-2 ${style.line}`}`}>
+                  <div className={`absolute w-7 h-7 ${style.dot} rounded-full text-white flex items-center justify-center text-sm font-bold -left-[15px] top-0 shadow-sm border-2 border-white`}>
+                    {step.id}
+                  </div>
+                  <div className={`${style.bg} p-4 rounded-xl shadow-sm border border-white/50 -mt-2`}>
+                    <h3 className={`font-bold text-lg ${style.text}`}>{step.title}</h3>
+                    {step.image && (
+                      <img 
+                        src={step.image} 
+                        alt={step.title} 
+                        className="w-full h-32 object-cover rounded-lg mt-3 mb-2 shadow-sm border border-white/60"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/400x300/fbcfe8/be185d?text=Image+Not+Found';
+                        }}
+                      />
+                    )}
+                    <p className="text-gray-700 mt-1 text-sm leading-relaxed whitespace-pre-line">{step.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+
+      const renderSteps = (steps, title, colorTheme, introContent = null) => {
+        const themeColor = colorTheme === 'facial' ? 'pink' : 'purple';
+        
+        return (
+          <div className="p-4 space-y-6 pb-24">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+            {introContent}
+            {steps.map((step) => (
+              <div key={step.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 {step.image && (
                   <img 
                     src={step.image} 
                     alt={step.title} 
-                    className="w-full h-32 object-cover rounded-lg mt-3 mb-2 shadow-sm border border-white/60"
+                    className="w-full h-48 object-cover bg-gray-100"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = 'https://placehold.co/400x300/fbcfe8/be185d?text=Image+Not+Found';
                     }}
                   />
                 )}
-
-                {/* 加上 whitespace-pre-line 讓 \n 可以正確斷行 */}
-                <p className="text-gray-700 mt-1 text-sm leading-relaxed whitespace-pre-line">{step.desc}</p>
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-bold text-lg text-gray-800">
+                      <span className={`text-${themeColor}-500 mr-2`}>Step {step.id}.</span>
+                      {step.title}
+                    </h3>
+                    <a 
+                      href={step.videoUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={`flex items-center text-sm text-${themeColor}-600 bg-${themeColor}-50 px-3 py-1 rounded-full hover:bg-${themeColor}-100 transition`}
+                      onClick={(e) => step.videoUrl === '#' && e.preventDefault()}
+                    >
+                      <PlayCircle size={16} className="mr-1" />
+                      看影片
+                    </a>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed whitespace-pre-line">{step.desc}</p>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  // 在這裡多加一個 introContent 參數，用來接收最上方的整體流程圖
-  const renderSteps = (steps, title, colorTheme, introContent = null) => {
-    const themeColor = colorTheme === 'facial' ? 'pink' : 'purple';
-    
-    return (
-      <div className="p-4 space-y-6 pb-24">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
-        
-        {/* 渲染傳進來的整體流程圖或穴道圖（如果有傳的話） */}
-        {introContent}
-
-        {steps.map((step) => (
-          <div key={step.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* 加入判斷：只有當 step.image 存在時，才渲染這張圖片 */}
-            {step.image && (
-              <img 
-                src={step.image} 
-                alt={step.title} 
-                className="w-full h-48 object-cover bg-gray-100"
-                onError={(e) => {
-                  e.target.onerror = null; // 避免無限循環
-                  e.target.src = 'https://placehold.co/400x300/fbcfe8/be185d?text=Image+Not+Found'; // 失敗時顯示的粉紅替代圖
-                }}
-              />
-            )}
-            <div className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold text-lg text-gray-800">
-                  <span className={`text-${themeColor}-500 mr-2`}>Step {step.id}.</span>
-                  {step.title}
-                </h3>
-                
-                {/* 影片按鈕 (如果網址不是 # 才會顯示有連結的樣子) */}
-                <a 
-                  href={step.videoUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={`flex items-center text-sm text-${themeColor}-600 bg-${themeColor}-50 px-3 py-1 rounded-full hover:bg-${themeColor}-100 transition`}
-                  onClick={(e) => step.videoUrl === '#' && e.preventDefault()}
-                >
-                  <PlayCircle size={16} className="mr-1" />
-                  看影片
-                </a>
-              </div>
-              {/* 這裡也加上 whitespace-pre-line，以後臉部/頭部撥筋文字也能斷行 */}
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">{step.desc}</p>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-    );
-  };
+        );
+      };
 
-  return (
-    <div className="max-w-md mx-auto bg-gray-50 min-h-screen relative font-sans">
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="px-4 py-4 text-center">
-          <h1 className="text-xl font-bold text-pink-600 tracking-wider">居家臉部撥筋指南</h1>
-        </div>
-      </header>
-
-      <main>
-        {activeTab === 'general' && renderGeneral()}
-        {activeTab === 'facial' && renderSteps(
-          facialSteps, 
-          '臉部撥筋步驟', 
-          'facial',
-          // 👇 這裡就是臉部撥筋專屬的「整體照片流程」和「穴道流程」👇
-          (
-            <div className="mb-6 space-y-4">
-              {/* 新增的註解提示區塊 */}
-              <div className="bg-pink-50 border-l-4 border-pink-500 p-3 rounded-r-lg shadow-sm">
-                <p className="text-pink-800 text-sm font-medium flex items-start">
-                  <AlertTriangle size={18} className="mr-2 flex-shrink-0 mt-0.5" />
-                  <span>
-                    <strong>重點提醒：</strong>請先從左臉開始進行撥筋，並在過程中適度持續添加按摩霜，避免拉扯肌膚。
-                  </span>
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-                {/* 改成可點擊的按鈕 */}
-                <button 
-                  onClick={() => setShowOverallProcess(!showOverallProcess)}
-                  className="w-full font-bold text-pink-800 flex items-center justify-between focus:outline-none"
-                >
-                  <span className="flex items-center">
-                    <Sparkles size={18} className="mr-2" /> 整體流程
-                  </span>
-                  <span className="text-pink-600 text-sm bg-pink-50 px-3 py-1 rounded-full transition-colors hover:bg-pink-100">
-                    {showOverallProcess ? '隱藏圖片 ▲' : '點擊查看 ▼'}
-                  </span>
-                </button>
-                
-                {/* 只有在 showOverallProcess 為 true 時才顯示圖片 */}
-                {showOverallProcess && (
-                  <div className="mt-4 pt-4 border-t border-pink-50 transition-all duration-300">
-                    <img 
-                      src="https://i.ibb.co/DPQ5qZq7/S-38723589-0.jpg" 
-                      alt="整體流程" 
-                      className="w-full rounded-lg object-cover border border-pink-100" 
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-                {/* 改成可點擊的按鈕 */}
-                <button 
-                  onClick={() => setShowAcupoints(!showAcupoints)}
-                  className="w-full font-bold text-pink-800 flex items-center justify-between focus:outline-none"
-                >
-                  <span className="flex items-center">
-                    <Smile size={18} className="mr-2" /> 臉部穴道分佈
-                  </span>
-                  <span className="text-pink-600 text-sm bg-pink-50 px-3 py-1 rounded-full transition-colors hover:bg-pink-100">
-                    {showAcupoints ? '隱藏圖片 ▲' : '點擊查看 ▼'}
-                  </span>
-                </button>
-                
-                {/* 只有在 showAcupoints 為 true 時才顯示圖片 */}
-                {showAcupoints && (
-                  <div className="mt-4 pt-4 border-t border-pink-50 transition-all duration-300">
-                    <img 
-                      src="https://i.ibb.co/zVm7fZJm/S-38723590-0.jpg" 
-                      alt="穴道分佈" 
-                      className="w-full rounded-lg object-cover border border-pink-100" 
-                    />
-                  </div>
-                )}
-              </div>
+      return (
+        <div className="max-w-md mx-auto bg-gray-50 min-h-screen relative font-sans shadow-xl">
+          <header className="bg-white shadow-sm sticky top-0 z-10">
+            <div className="px-4 py-4 text-center">
+              <h1 className="text-xl font-bold text-pink-600 tracking-wider">居家臉部撥筋指南</h1>
             </div>
-          )
-        )}
-        {activeTab === 'head' && renderSteps(
-          headSteps, 
-          '頭部撥筋步驟', 
-          'head',
-          // 👇 這裡就是頭部撥筋專屬的「重點提醒」和「整體流程」👇
-          (
-            <div className="mb-6 space-y-4">
-              {/* 頭部專屬的註解提示區塊 (紫色系) */}
-              <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded-r-lg shadow-sm">
-                <p className="text-purple-800 text-sm font-medium flex items-start">
-                  <AlertTriangle size={18} className="mr-2 flex-shrink-0 mt-0.5" />
-                  <span>
-                    <strong>重點提醒：</strong>請保持力道適中，順著經絡方向梳理。遇到氣結或痠痛點可稍作停留輕按，切勿過度用力拉扯頭皮。
-                  </span>
-                </p>
-              </div>
+          </header>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-                {/* 改成可點擊的按鈕 */}
-                <button 
-                  onClick={() => setShowHeadOverallProcess(!showHeadOverallProcess)}
-                  className="w-full font-bold text-purple-800 flex items-center justify-between focus:outline-none"
-                >
-                  <span className="flex items-center">
-                    <Sparkles size={18} className="mr-2" /> 頭部整體流程
-                  </span>
-                  <span className="text-purple-600 text-sm bg-purple-50 px-3 py-1 rounded-full transition-colors hover:bg-purple-100">
-                    {showHeadOverallProcess ? '隱藏圖片 ▲' : '點擊查看 ▼'}
-                  </span>
-                </button>
-                
-                {/* 只有在 showHeadOverallProcess 為 true 時才顯示圖片 */}
-                {showHeadOverallProcess && (
-                  <div className="mt-4 pt-4 border-t border-purple-50 transition-all duration-300">
-                    {/* ⚠️ 請把下方 src 的網址換成你的「頭部整體流程」圖片直接連結 */}
-                    <img 
-                      src="https://i.ibb.co/zVm7fZJm/S-38723590-0.jpg" 
-                      alt="頭部整體流程" 
-                      className="w-full rounded-lg object-cover border border-purple-100" 
-                    />
+          <main>
+            {activeTab === 'general' && renderGeneral()}
+            {activeTab === 'facial' && renderSteps(
+              facialSteps, 
+              '臉部撥筋步驟', 
+              'facial',
+              (
+                <div className="mb-6 space-y-4">
+                  <div className="bg-pink-50 border-l-4 border-pink-500 p-3 rounded-r-lg shadow-sm">
+                    <p className="text-pink-800 text-sm font-medium flex items-start">
+                      <AlertTriangle size={18} className="mr-2 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>重點提醒：</strong>請先從左臉開始進行撥筋，並在過程中適度持續添加按摩霜，避免拉扯肌膚。
+                      </span>
+                    </p>
                   </div>
-                )}
-              </div>
+
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+                    <button 
+                      onClick={() => setShowOverallProcess(!showOverallProcess)}
+                      className="w-full font-bold text-pink-800 flex items-center justify-between focus:outline-none"
+                    >
+                      <span className="flex items-center">
+                        <Sparkles size={18} className="mr-2" /> 整體流程
+                      </span>
+                      <span className="text-pink-600 text-sm bg-pink-50 px-3 py-1 rounded-full transition-colors hover:bg-pink-100">
+                        {showOverallProcess ? '隱藏圖片 ▲' : '點擊查看 ▼'}
+                      </span>
+                    </button>
+                    {showOverallProcess && (
+                      <div className="mt-4 pt-4 border-t border-pink-50 transition-all duration-300">
+                        <img 
+                          src="https://i.ibb.co/DPQ5qZq7/S-38723589-0.jpg" 
+                          alt="整體流程" 
+                          className="w-full rounded-lg object-cover border border-pink-100" 
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+                    <button 
+                      onClick={() => setShowAcupoints(!showAcupoints)}
+                      className="w-full font-bold text-pink-800 flex items-center justify-between focus:outline-none"
+                    >
+                      <span className="flex items-center">
+                        <Smile size={18} className="mr-2" /> 臉部穴道分佈
+                      </span>
+                      <span className="text-pink-600 text-sm bg-pink-50 px-3 py-1 rounded-full transition-colors hover:bg-pink-100">
+                        {showAcupoints ? '隱藏圖片 ▲' : '點擊查看 ▼'}
+                      </span>
+                    </button>
+                    {showAcupoints && (
+                      <div className="mt-4 pt-4 border-t border-pink-50 transition-all duration-300">
+                        <img 
+                          src="https://i.ibb.co/9k4zsJQf/S-38723588-0.jpg" 
+                          alt="穴道分佈" 
+                          className="w-full rounded-lg object-cover border border-pink-100" 
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+            {activeTab === 'head' && renderSteps(
+              headSteps, 
+              '頭部撥筋步驟', 
+              'head',
+              (
+                <div className="mb-6 space-y-4">
+                  <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded-r-lg shadow-sm">
+                    <p className="text-purple-800 text-sm font-medium flex items-start">
+                      <AlertTriangle size={18} className="mr-2 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>重點提醒：</strong>請保持力道適中，順著經絡方向梳理。遇到氣結或痠痛點可稍作停留輕按，切勿過度用力拉扯頭皮。
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+                    <button 
+                      onClick={() => setShowHeadOverallProcess(!showHeadOverallProcess)}
+                      className="w-full font-bold text-purple-800 flex items-center justify-between focus:outline-none"
+                    >
+                      <span className="flex items-center">
+                        <Sparkles size={18} className="mr-2" /> 頭部整體流程
+                      </span>
+                      <span className="text-purple-600 text-sm bg-purple-50 px-3 py-1 rounded-full transition-colors hover:bg-purple-100">
+                        {showHeadOverallProcess ? '隱藏圖片 ▲' : '點擊查看 ▼'}
+                      </span>
+                    </button>
+                    {showHeadOverallProcess && (
+                      <div className="mt-4 pt-4 border-t border-purple-50 transition-all duration-300">
+                        <img 
+                          src="https://i.ibb.co/zVm7fZJm/S-38723590-0.jpg" 
+                          alt="頭部整體流程" 
+                          className="w-full rounded-lg object-cover border border-purple-100" 
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+          </main>
+
+          <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 pb-safe z-20">
+            <div className="flex justify-around items-center h-16">
+              <button 
+                onClick={() => setActiveTab('general')}
+                className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'general' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <List size={24} />
+                <span className="text-[10px] font-medium">總步驟</span>
+              </button>
+              
+              <button 
+                onClick={() => setActiveTab('facial')}
+                className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'facial' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <Smile size={24} />
+                <span className="text-[10px] font-medium">臉部撥筋</span>
+              </button>
+              
+              <button 
+                onClick={() => setActiveTab('head')}
+                className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'head' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <UserCircle size={24} />
+                <span className="text-[10px] font-medium">頭部撥筋</span>
+              </button>
             </div>
-          )
-        )}
-      </main>
-
-      <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 pb-safe z-20">
-        <div className="flex justify-around items-center h-16">
-          <button 
-            onClick={() => setActiveTab('general')}
-            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'general' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
-          >
-            <List size={24} />
-            <span className="text-[10px] font-medium">總步驟</span>
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('facial')}
-            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'facial' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
-          >
-            <Smile size={24} />
-            <span className="text-[10px] font-medium">臉部撥筋</span>
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('head')}
-            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === 'head' ? 'text-pink-600' : 'text-gray-400 hover:text-gray-600'}`}
-          >
-            <UserCircle size={24} />
-            <span className="text-[10px] font-medium">頭部撥筋</span>
-          </button>
+          </nav>
         </div>
-      </nav>
-    </div>
-  );
-};
+      );
+    };
 
-export default App;
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
